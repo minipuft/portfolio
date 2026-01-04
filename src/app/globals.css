@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+/* Tokyo Night Color Palette */
+:root {
+  /* Background colors */
+  --tn-bg-light: #1a1b26;
+  --tn-bg-dark: #16161e;
+  --tn-bg-lighter: #24283b;
+
+  /* Foreground colors */
+  --tn-fg: #a9b1d6;
+  --tn-fg-muted: #565f89;
+  --tn-fg-bright: #c0caf5;
+
+  /* Primary accent colors */
+  --tn-primary: #7aa2f7;
+  --tn-secondary: #bb9af7;
+
+  /* Accent colors */
+  --tn-accent-peach: #ff9e64;
+  --tn-accent-green: #9ece6a;
+  --tn-accent-cyan: #7dcfff;
+  --tn-accent-red: #f7768e;
+
+  /* Dynamic accent (can be changed by ColorContext) */
+  --accent-color: #7aa2f7;
+  --accent-rgb: 122, 162, 247;
+
+  /* Semantic mappings */
+  --background: var(--tn-bg-light);
+  --foreground: var(--tn-fg);
+}
+
+@theme inline {
+  /* Background */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  /* Tokyo Night palette */
+  --color-tn-bg-light: var(--tn-bg-light);
+  --color-tn-bg-dark: var(--tn-bg-dark);
+  --color-tn-bg-lighter: var(--tn-bg-lighter);
+  --color-tn-fg: var(--tn-fg);
+  --color-tn-fg-muted: var(--tn-fg-muted);
+  --color-tn-fg-bright: var(--tn-fg-bright);
+  --color-tn-primary: var(--tn-primary);
+  --color-tn-secondary: var(--tn-secondary);
+  --color-tn-accent-peach: var(--tn-accent-peach);
+  --color-tn-accent-green: var(--tn-accent-green);
+  --color-tn-accent-cyan: var(--tn-accent-cyan);
+  --color-tn-accent-red: var(--tn-accent-red);
+
+  /* Dynamic accent */
+  --color-accent: var(--accent-color);
+
+  /* Fonts */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+}
+
+/* Utility classes for accent color usage */
+.accent-bg {
+  background-color: rgba(var(--accent-rgb), 0.1);
+}
+
+.accent-text {
+  color: var(--accent-color);
+}
+
+.accent-border {
+  border-color: var(--accent-color);
+}
