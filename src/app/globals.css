@@ -1,34 +1,66 @@
 @import "tailwindcss";
 
-/* Tokyo Night Color Palette */
+/* 
+  BIOLUMINESCENT DESIGN SYSTEM (Year 3000)
+  ----------------------------------------
+  Colors are not static. They are living functions of:
+  1. Base Hue (Identity)
+  2. Physics Energy (Mouse Velocity)
+  3. Scroll Depth (Environment)
+*/
+
 :root {
-  /* Background colors */
-  --tn-bg-light: #1a1b26;
-  --tn-bg-dark: #16161e;
-  --tn-bg-lighter: #24283b;
+  /* --- PHYSICS ENGINE DEFAULTS --- */
+  /* These are updated by useEnvironmentalPhysics via JS */
+  --physics-velocity: 0;      /* 0.0 to 1.0 (Movement Speed) */
+  --physics-scroll-speed: 0;  /* 0.0 to 1.0 (Scroll Momentum) */
+  --physics-energy: 0;        /* 0.0 to 1.0 (Combined Life Force) */
+  
+  /* --- BASE PARAMETERS --- */
+  --luminance-floor: 0.65;    /* Resting brightness */
+  --chroma-base: 0.14;        /* Resting saturation */
+  --primary-hue: 260;         /* Tokyo Night Blue Hue */
 
-  /* Foreground colors */
-  --tn-fg: #a9b1d6;
-  --tn-fg-muted: #565f89;
-  --tn-fg-bright: #c0caf5;
+  /* --- DYNAMIC TOKYO NIGHT PALETTE (OKLCH) --- */
+  
+  /* 
+     Formula: 
+     L = Floor + (Energy * 0.15) -> Surges brighter when active
+     C = Base + (Energy * 0.05)  -> Becomes more vivid when active
+     H = Constant (for now)
+  */
 
-  /* Primary accent colors */
-  --tn-primary: #7aa2f7;
-  --tn-secondary: #bb9af7;
+  /* Backgrounds (Stable, Low Energy) */
+  --tn-bg-light: oklch(0.20 0.04 265);   /* #1a1b26 approx */
+  --tn-bg-dark:  oklch(0.18 0.03 270);   /* #16161e approx */
+  --tn-bg-lighter: oklch(0.25 0.05 265); /* #24283b approx */
 
-  /* Accent colors */
-  --tn-accent-peach: #ff9e64;
-  --tn-accent-green: #9ece6a;
-  --tn-accent-cyan: #7dcfff;
-  --tn-accent-red: #f7768e;
+  /* Foreground (Responsive) */
+  --tn-fg: oklch(0.75 0.05 260);         /* #a9b1d6 */
+  --tn-fg-muted: oklch(0.55 0.05 260);   /* #565f89 */
+  --tn-fg-bright: oklch(
+    calc(0.85 + (var(--physics-energy) * 0.1)) 
+    0.05 
+    260
+  ); /* #c0caf5 -> White-hot on move */
 
-  /* Dynamic accent (can be changed by ColorContext) */
-  --accent-color: #7aa2f7;
-  --accent-rgb: 122, 162, 247;
+  /* Primary Accent (The Heartbeat) */
+  --tn-primary: oklch(
+    calc(var(--luminance-floor) + (var(--physics-energy) * 0.15))
+    calc(var(--chroma-base) + (var(--physics-energy) * 0.05))
+    var(--primary-hue)
+  ); 
+
+  /* Secondary Accent */
+  --tn-secondary: oklch(0.75 0.12 290); /* #bb9af7 */
 
   /* Semantic mappings */
   --background: var(--tn-bg-light);
   --foreground: var(--tn-fg);
+  
+  /* Dynamic Accent (Used by ThemeController) */
+  --accent-color: var(--tn-primary);
+  --accent-rgb: 122, 162, 247; /* Fallback for rgba usage */
 }
 
 @theme inline {
@@ -45,10 +77,6 @@
   --color-tn-fg-bright: var(--tn-fg-bright);
   --color-tn-primary: var(--tn-primary);
   --color-tn-secondary: var(--tn-secondary);
-  --color-tn-accent-peach: var(--tn-accent-peach);
-  --color-tn-accent-green: var(--tn-accent-green);
-  --color-tn-accent-cyan: var(--tn-accent-cyan);
-  --color-tn-accent-red: var(--tn-accent-red);
 
   /* Dynamic accent */
   --color-accent: var(--accent-color);
@@ -63,11 +91,33 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   min-height: 100vh;
+  transition: background-color 0.5s ease;
 }
 
-/* Utility classes for accent color usage */
+/* --- UTILITIES --- */
+
+/* 1. The Metaball Container (Fluid Grid) */
+/* Apply this to a container of blurred circles to make them merge */
+.metaball-container {
+  filter: contrast(15);
+  background: var(--tn-bg-dark);
+}
+
+.metaball-item {
+  filter: blur(10px);
+}
+
+/* 2. Energy Text */
+/* Text that glows when you move fast */
+.energy-text {
+  color: var(--tn-fg-bright);
+  text-shadow: 0 0 calc(var(--physics-energy) * 10px) var(--tn-primary);
+  transition: text-shadow 0.1s linear; /* Fast response */
+}
+
+/* 3. Utility classes for accent color usage */
 .accent-bg {
-  background-color: rgba(var(--accent-rgb), 0.1);
+  background-color: oklch(from var(--accent-color) l c h / 0.1);
 }
 
 .accent-text {
@@ -76,4 +126,57 @@ body {
 
 .accent-border {
   border-color: var(--accent-color);
+}
+
+/* Reduced Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Disable Physics Effects */
+  :root {
+    --physics-velocity: 0;
+    --physics-energy: 0;
+  }
+
+  .floating-decoration, .warped-mesh, .distortion-effect {
+    display: none !important;
+  }
+  
+  [data-animate] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Performance optimizations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+[data-animate] {
+  opacity: 0;
+  visibility: hidden;
+  will-change: transform, opacity, visibility;
+}
+
+[data-bento-grid] [data-bento-cell] {
+  opacity: 0;
+  visibility: hidden;
+  filter: blur(var(--focus-blur, 0px));
+  will-change: transform, opacity, filter;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-bento-grid] [data-bento-cell] {
+    opacity: 1 !important;
+    visibility: visible !important;
+    filter: none !important;
+  }
 }

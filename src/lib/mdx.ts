@@ -27,6 +27,7 @@ export interface BlogFrontmatter {
   tags: string[];
   featured: boolean;
   draft: boolean;
+  format?: 'narrative' | 'quicktake';
   readingTime?: number;
 }
 

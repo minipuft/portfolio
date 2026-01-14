@@ -9,6 +9,8 @@ interface AnimatedSectionProps {
   preset?: PresetKey;
   stagger?: 'stagger' | 'staggerFast' | 'staggerSlow';
   className?: string;
+  once?: boolean;
+  toggleActions?: string;
 }
 
 export default function AnimatedSection({
@@ -16,10 +18,14 @@ export default function AnimatedSection({
   preset = 'fadeInUp',
   stagger = 'stagger',
   className = '',
+  once,
+  toggleActions,
 }: AnimatedSectionProps) {
   const ref = useStaggerAnimation<HTMLElement>({
     preset,
     staggerPreset: stagger,
+    once,
+    toggleActions,
   });
 
   return (

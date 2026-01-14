@@ -59,6 +59,8 @@ interface UseStaggerAnimationOptions {
   staggerPreset?: 'stagger' | 'staggerFast' | 'staggerSlow';
   selector?: string;
   triggerStart?: string;
+  toggleActions?: string;
+  once?: boolean;
 }
 
 export function useStaggerAnimation<T extends HTMLElement>(
@@ -69,6 +71,8 @@ export function useStaggerAnimation<T extends HTMLElement>(
     staggerPreset = 'stagger',
     selector = '[data-animate]',
     triggerStart = 'top 80%',
+    toggleActions = 'play none none none',
+    once = true,
   } = options;
 
   const ref = useRef<T>(null);
@@ -84,6 +88,9 @@ export function useStaggerAnimation<T extends HTMLElement>(
     const elements = ref.current.querySelectorAll(selector);
     if (elements.length === 0) return;
 
+    // Set initial state immediately to prevent FOUC (double protection)
+    gsap.set(elements, animation.from);
+
     gsap.fromTo(
       elements,
       animation.from,
@@ -93,11 +100,15 @@ export function useStaggerAnimation<T extends HTMLElement>(
         scrollTrigger: {
           trigger: ref.current,
           start: triggerStart,
-          toggleActions: 'play none none reverse',
+          toggleActions,
+          once,
         },
       }
     );
-  }, { scope: ref, dependencies: [preset, staggerPreset, selector, triggerStart] });
+
+    // Force refresh to ensure accurate start positions
+    ScrollTrigger.refresh();
+  }, { scope: ref, dependencies: [preset, staggerPreset, selector, triggerStart, toggleActions, once] });
 
   return ref;
 }

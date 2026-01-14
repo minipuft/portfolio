@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ColorProvider } from "@/contexts/ColorContext";
+import { ModalProvider } from "@/contexts/ModalContext";
+import { SidebarProvider } from "@/contexts/SidebarContext";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import SmoothScroll from "@/components/effects/SmoothScroll";
+import ThemeController from "@/components/effects/ThemeController";
+import TextureOverlay from "@/components/layout/TextureOverlay";
+import ContextualSidebar from "@/components/layout/ContextualSidebar";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,18 +28,29 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode;
+  modal: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[var(--tn-bg-light)] text-[var(--tn-fg)] min-h-screen flex flex-col`}
       >
         <ColorProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <ModalProvider>
+            <SidebarProvider>
+              <TextureOverlay />
+              <SmoothScroll />
+              <ThemeController />
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+              <ContextualSidebar />
+              {modal}
+            </SidebarProvider>
+          </ModalProvider>
         </ColorProvider>
       </body>
     </html>

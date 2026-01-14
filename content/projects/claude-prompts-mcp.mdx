@@ -1,0 +1,29 @@
+---
+title: "Claude Prompts MCP"
+description: "Production MCP server for structured prompt workflows with CAGEERF methodology."
+heroImage: "/assets/image.png"
+accentColor: "#7aa2f7"
+technologies: ["TypeScript", "Node.js", "MCP"]
+github: "https://github.com/minipuft/claude-prompts-mcp"
+featured: true
+order: 1
+status: "active"
+---
+
+# Claude Prompts MCP
+
+A robust Model Context Protocol (MCP) server designed to manage and execute complex prompt chains.
+
+## Key Features
+
+- **CAGEERF Methodology**: Systematic prompt engineering framework.
+- **Chain Execution**: Run multi-step prompt workflows.
+- **Quality Gates**: Validate outputs before proceeding.
+
+```typescript
+// Example chain definition
+const chain = new Chain({
+  steps: ['analyze', 'plan', 'execute'],
+  gates: ['review']
+});
+```
